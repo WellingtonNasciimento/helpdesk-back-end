@@ -1,21 +1,46 @@
 package com.wdsystems.helpdesk.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wdsystems.helpdesk.domain.enums.Profile;
 
-public abstract class Person {
-
+@Entity
+public abstract class Person implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Integer id;
 	protected String name;
+	
+	@Column(unique = true)
 	protected String cpf;
+	
+	@Column(unique = true)
 	protected String email;
 	protected String password;
+	
+	@ElementCollection(fetch = FetchType.EAGER) // user's profile list
+	@CollectionTable(name = "PERFIS")
 	protected Set<Integer> profiles = new HashSet<>();
+	
+	@JsonFormat(pattern = "yyyy/MM/dd")
 	protected LocalDate registrationDate = LocalDate.now();
 	
 	public Person() {

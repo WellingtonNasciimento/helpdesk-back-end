@@ -1,22 +1,44 @@
 package com.wdsystems.helpdesk.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wdsystems.helpdesk.domain.enums.Priority;
 import com.wdsystems.helpdesk.domain.enums.Status;
 
-public class Order {
+@Entity
+public class Order implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate orderDate = LocalDate.now();
+	@JsonFormat(pattern = "yyyy/MM/dd")
 	private LocalDate closeDate;
+	
 	private Priority priority;
 	private Status status;
 	private String title;
 	private String comments;
 	
+	@ManyToOne
+	@JoinColumn(name = "technical_id")
 	private Technical technical;
+	
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
 	
 	public Order() {
