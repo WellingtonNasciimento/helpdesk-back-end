@@ -2,9 +2,9 @@ package com.wdsystems.helpdesk.domain.enums;
 
 public enum Status {
 
-	HIGH(0, "HIGH"), 
-	MEDIUM(1, "MEDIUM"),
-	LOW(2, "LOW");
+	ABERTO(0, "ABERTO"), 
+	ANDAMENTO(1, "ANDAMENTO"),
+	ENCERRADO(2, "ENCERRADO");
 
 	private Integer code;
 	private String description;
@@ -33,6 +33,6 @@ public enum Status {
 			}
 		}
 		
-		throw new IllegalArgumentException("Invalid priority");
+		throw new IllegalArgumentException("Status inválido");
 	}
 }
