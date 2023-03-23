@@ -80,7 +80,7 @@ public class TecnicoDTO implements Serializable {
 		this.senha = senha;
 	}
 
-	public Set<Perfil> getPerfil() {
+	public Set<Perfil> getPerfis() {
 		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
 	}
 
@@ -94,6 +94,6 @@ public class TecnicoDTO implements Serializable {
 
 	public void setDataCriacao(LocalDate dataCriacao) {
 		this.dataCriacao = dataCriacao;
-	}
+	}	
 
 }
