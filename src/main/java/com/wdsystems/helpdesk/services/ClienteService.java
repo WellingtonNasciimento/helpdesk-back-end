@@ -8,60 +8,60 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wdsystems.helpdesk.domain.Cliente;
 import com.wdsystems.helpdesk.domain.Pessoa;
-import com.wdsystems.helpdesk.domain.Tecnico;
-import com.wdsystems.helpdesk.domain.dtos.TecnicoDTO;
+import com.wdsystems.helpdesk.domain.dtos.ClienteDTO;
+import com.wdsystems.helpdesk.repositories.ClienteRepository;
 import com.wdsystems.helpdesk.repositories.PessoaRepository;
-import com.wdsystems.helpdesk.repositories.TecnicoRepository;
 import com.wdsystems.helpdesk.services.exceptions.DataIntegrityViolationException;
 import com.wdsystems.helpdesk.services.exceptions.ObjectNotFoundException;
 
 @Service
-public class TecnicoService {
+public class ClienteService {
 
 	@Autowired
-	private TecnicoRepository tecnicoRepository;
+	private ClienteRepository clienteRepository;
 	
 	@Autowired
 	private PessoaRepository pessoaRepository;
 	
-	public Tecnico findByID(Integer id) {
+	public Cliente findByID(Integer id) {
 		
-		Optional<Tecnico> obj = tecnicoRepository.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException("Tecnico Not Found - ID: " + id));
+		Optional<Cliente> obj = clienteRepository.findById(id);
+		return obj.orElseThrow(() -> new ObjectNotFoundException("Cliente Not Found - ID: " + id));
 	}
 
-	public List<Tecnico> findAll() {
-		return tecnicoRepository.findAll();
+	public List<Cliente> findAll() {
+		return clienteRepository.findAll();
 	}
 
-	public Tecnico create(TecnicoDTO objDTO) {
+	public Cliente create(ClienteDTO objDTO) {
 		
 		objDTO.setId(null);
 		validateByCpfAndEmail(objDTO);
-		Tecnico newOBJ = new Tecnico(objDTO);
-		return tecnicoRepository.save(newOBJ);
+		Cliente newOBJ = new Cliente(objDTO);
+		return clienteRepository.save(newOBJ);
 	}
 
-	public Tecnico update(Integer id, @Valid TecnicoDTO objDTO) {
+	public Cliente update(Integer id, @Valid ClienteDTO objDTO) {
 		
 		objDTO.setId(id);
-		Tecnico oldOBJ = findByID(id);
+		Cliente oldOBJ = findByID(id);
 		validateByCpfAndEmail(objDTO);
-		oldOBJ = new Tecnico(objDTO);
-		return tecnicoRepository.save(oldOBJ);
+		oldOBJ = new Cliente(objDTO);
+		return clienteRepository.save(oldOBJ);
 	}
 
 	public void delete(Integer id) {
 		
-		Tecnico obj = findByID(id);
+		Cliente obj = findByID(id);
 		if(obj.getChamados().size() > 0) {
-			throw new DataIntegrityViolationException("Técnico possui ordens de serviço e não pode ser deletado!");
+			throw new DataIntegrityViolationException("Cliente possui ordens de serviço e não pode ser deletado!");
 		}
-		tecnicoRepository.deleteById(id);
+		clienteRepository.deleteById(id);
 	}
 
-	private void validateByCpfAndEmail(TecnicoDTO objDTO) {
+	private void validateByCpfAndEmail(ClienteDTO objDTO) {
 		
 		Optional<Pessoa> obj = pessoaRepository.findByCpf(objDTO.getCpf());
 		if(obj.isPresent() && obj.get().getId() != objDTO.getId()) 
@@ -70,5 +70,7 @@ public class TecnicoService {
 		obj = pessoaRepository.findByEmail(objDTO.getEmail());
 		if(obj.isPresent() && obj.get().getId() != objDTO.getId()) 
 			throw new DataIntegrityViolationException("Email já cadastrado no sistema!");
+				
 	}
+
 }
