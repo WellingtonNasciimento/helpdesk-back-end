@@ -3,6 +3,9 @@ package com.wdsystems.helpdesk.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +44,15 @@ public class TecnicoService {
 		return tecnicoRepository.save(newOBJ);
 	}
 
+	public Tecnico update(Integer id, @Valid TecnicoDTO objDTO) {
+		
+		objDTO.setId(id);
+		Tecnico oldOBJ = findByID(id);
+		validateByCpfAndEmail(objDTO);
+		oldOBJ = new Tecnico(objDTO);
+		return tecnicoRepository.save(oldOBJ);
+	}
+	
 	private void validateByCpfAndEmail(TecnicoDTO objDTO) {
 		
 		Optional<Pessoa> obj = pessoaRepository.findByCpf(objDTO.getCpf());
