@@ -1,7 +1,10 @@
 package com.wdsystems.helpdesk.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,14 @@ public class ChamadoService {
 		return chamadoRepository.save(newChamado(objDTO));
 	}
 	
+	public Chamado update(Integer id, @Valid ChamadoDTO objDTO) {
+		
+		objDTO.setId(id);
+		Chamado oldOBJ = findById(id);
+		oldOBJ = newChamado(objDTO);
+		return chamadoRepository.save(oldOBJ);
+	}
+	
 	private Chamado newChamado(ChamadoDTO obj) {
 		
 		Tecnico tecnico = tecnicoService.findByID(obj.getTecnico());
@@ -56,6 +67,10 @@ public class ChamadoService {
 			chamado.setId(obj.getId());
 		}
 		
+		if(obj.getStatus().equals(2)) {
+			chamado.setDataFechamento(LocalDate.now());
+		}
+		
 		chamado.setTecnico(tecnico);
 		chamado.setCliente(cliente);
 		chamado.setPrioridade(Prioridade.toEnum(obj.getPrioridade()));
@@ -65,4 +80,5 @@ public class ChamadoService {
 		
 		return chamado;
 	}
+
 }
