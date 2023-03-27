@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wdsystems.helpdesk.domain.dtos.CredenciaisDTO;
+import com.wdsystems.helpdesk.services.exceptions.InvalidCredentialException;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
@@ -43,9 +44,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authentication = authenticationManager.authenticate(authenticationToken);
 			
 			return authentication;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println("PASSEI AQUI");
-			throw new RuntimeException(e);
+			throw new InvalidCredentialException(e.getMessage());
 		}
 	}
 	
@@ -66,17 +67,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(CONTENT_TYPE);
-		response.getWriter().append(json());
+		response.getWriter().append(json(HttpStatus.UNAUTHORIZED));
 	}
 
-	private CharSequence json() {
+	private CharSequence json(HttpStatus httpStatus) {
 		long date = new Date().getTime();
 		
 		return "{"
 		+ "\"timestamp\": " + date + ", " 
-		+ "\"status\": 401, "
-		+ "\"error\": \"Não autorizado\", "
-		+ "\"message\": \"Email ou senha inválidos\", "
+		+ "\"status\": " + httpStatus + ", "
+		+ "\"error\": \"Invalid credentials\", "
+		+ "\"message\": \"Invalid email or password\", "
 		+ "\"path\": \"/login\"}";
 	}
 }

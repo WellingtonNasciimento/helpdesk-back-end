@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.wdsystems.helpdesk.services.exceptions.DataIntegrityViolationException;
+import com.wdsystems.helpdesk.services.exceptions.InvalidCredentialException;
 import com.wdsystems.helpdesk.services.exceptions.ObjectNotFoundException;
 
 @ControllerAdvice
@@ -71,4 +72,16 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 
+	@ExceptionHandler(InvalidCredentialException.class)
+	public ResponseEntity<StandardError> invalidCredentialException(InvalidCredentialException ex,
+			HttpServletRequest request) {
+
+		StandardError error = new StandardError(System.currentTimeMillis()
+											  , HttpStatus.UNAUTHORIZED.value()
+											  , "Unauthorized"
+											  , "Invalid email or password"
+											  , request.getRequestURI());
+		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+	}
 }
