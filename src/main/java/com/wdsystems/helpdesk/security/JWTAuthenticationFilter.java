@@ -45,7 +45,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			
 			return authentication;
 		} catch (IOException e) {
-			System.out.println("PASSEI AQUI");
 			throw new InvalidCredentialException(e.getMessage());
 		}
 	}
