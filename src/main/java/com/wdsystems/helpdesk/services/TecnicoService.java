@@ -50,6 +50,11 @@ public class TecnicoService {
 		
 		objDTO.setId(id);
 		Tecnico oldOBJ = findByID(id);
+		
+		if(!objDTO.getSenha().equals(oldOBJ.getSenha())) {
+			objDTO.setSenha(encoder.encode(objDTO.getSenha()));
+		}
+		
 		validateByCpfAndEmail(objDTO);
 		oldOBJ = new Tecnico(objDTO);
 		return tecnicoRepository.save(oldOBJ);
